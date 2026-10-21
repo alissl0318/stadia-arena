@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STADIA ARENA — Tek Sayfa Web Mimarisi & Yönetici Sunumu</title>
+  
+  <!-- FONTS: CORMORANT GARAMOND & JOST -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Jost:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+  
+  <!-- FONTAWESOME 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    /* ==========================================================================
+       THE DESIGN LANGUAGE — STADIA ARENA "HAUTE COUTURE LUXURY EDITION"
+       ========================================================================== */
+    :root {
+      --bg: #07100c;
+      --bg-panel: #0e1e17;
+      --bg-panel-2: #12261d;
+      --bg-card: rgba(18, 38, 29, 0.7);
+      --bg-glass: rgba(14, 30, 23, 0.85);
+      --text: #efe6d6;
+      --text-muted: rgba(239, 230, 214, 0.65);
+      --text-subtle: rgba(239, 230, 214, 0.45);
+      --glow: #e3a857;
+      --glow-bright: #fbc975;
+      --glow-dim: rgba(227, 168, 87, 0.25);
+      --green: #1c3a2b;
+      --green-light: #2c5943;
+      --hairline: rgba(239, 230, 214, 0.12);
+      --hairline-gold: rgba(227, 168, 87, 0.35);
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Jost', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --shadow-luxe: 0 20px 50px rgba(0, 0, 0, 0.6);
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 8px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-weight: 300;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    /* ==========================================================================
+       PRINT & PDF RULES: STRICT 16:9 WIDESCREEN PAGINATION (1920x1080)
+       ========================================================================== */
+    @page {
+      size: 1920px 1080px;
+      margin: 0;
+    }
+
+    @media print {
+      html, body {
+        width: 1920px !important;
+        height: auto !important;
+        background-color: var(--bg) !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        overflow: visible !important;
+      }
+
+      .presentation-controls,
+      .presentation-nav {
+        display: none !important;
+      }
+
+      .slide-container {
+        display: block !important;
+      }
+
+      .slide {
+        width: 1920px !important;
+        min-width: 1920px !important;
+        max-width: 1920px !important;
+        height: 1080px !important;
+        min-height: 1080px !important;
+        max-height: 1080px !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        display: flex !important;
+        position: relative !important;
+        overflow: hidden !important;
+      }
+    }
+
+    /* ==========================================================================
+       SCREEN VIEW: INTERACTIVE SLIDESHOW MODE
+       ========================================================================== */
+    @media screen {
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #030604;
+        min-height: 100vh;
+        overflow-y: auto;
+        padding-bottom: 90px;
+      }
+
+      .slide-container {
+        width: 100%;
+        max-width: 1920px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+        padding: 40px 20px;
+      }
+
+      .slide {
+        width: 1920px;
+        height: 1080px;
+        border-radius: 8px;
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(227, 168, 87, 0.2);
+        display: flex;
+        position: relative;
+        overflow: hidden;
+        background-color: var(--bg);
+        transform-origin: top center;
+      }
+
+      @media (max-width: 1960px) {
+        .slide-container {
+          padding: 20px 0;
+          gap: 30px;
+        }
+        .slide {
+          transform: scale(calc((100vw - 40px) / 1920));
+          margin-bottom: calc(1080px * (calc((100vw - 40px) / 1920) - 1));
+        }
+      }
+    }
+
+    /* SLIDE LAYOUT */
+    .slide {
+      background-color: var(--bg);
+      position: relative;
+      overflow: hidden;
+      flex-direction: column;
+      padding: 50px 70px;
+      color: var(--text);
+    }
+
+    .slide::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -10%;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(227, 168, 87, 0.08) 0%, rgba(28, 58, 43, 0.15) 45%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .slide::after {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      left: -10%;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(28, 58, 43, 0.2) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .slide-content-wrap {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* SLIDE HEADER */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--hairline);
+      padding-bottom: 18px;
+    }
+
+    .slide-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .slide-tag {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--glow);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .slide-tag::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--glow);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--glow);
+    }
+
+    .slide-title {
+      font-family: var(--font-serif);
+      font-size: 38px;
+      font-weight: 500;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+
+    .slide-title span {
+      color: var(--glow);
+      font-style: italic;
+    }
+
+    .slide-subtitle {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      max-width: 950px;
+      margin-top: 3px;
+    }
+
+    .slide-header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .slide-brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px;
+      background: rgba(227, 168, 87, 0.08);
+      border: 1px solid var(--hairline-gold);
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--glow);
+      font-weight: 500;
+    }
+
+    .slide-brand-pill .dot {
+      width: 7px;
+      height: 7px;
+      background: var(--glow);
+      border-radius: 50%;
+    }
+
+    .slide-page-num {
+      font-size: 12px;
+      color: var(--text-subtle);
+      letter-spacing: 1px;
+    }
+
+    /* SLIDE FOOTER */
+    .slide-footer {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid var(--hairline);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-subtle);
+      letter-spacing: 0.5px;
+    }
+
+    .slide-footer-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .slide-footer-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: var(--text-muted);
+    }
+
+    /* LUXURY CARDS */
+    .luxe-card {
+      background: var(--bg-card);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      position: relative;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .luxe-card.gold-border {
+      border-color: var(--hairline-gold);
+    }
+
+    .luxe-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .luxe-icon-box {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: rgba(227, 168, 87, 0.12);
+      border: 1px solid var(--hairline-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--glow);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .luxe-card-title {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .luxe-card-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* METRIC PILLS & BADGES */
+    .metric-chip {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .metric-chip.gold {
+      background: rgba(227, 168, 87, 0.12);
+      border-color: var(--hairline-gold);
+      color: var(--glow);
+    }
+
+    .metric-chip.green {
+      background: rgba(69, 230, 157, 0.12);
+      border-color: rgba(69, 230, 157, 0.4);
+      color: #45e69d;
+    }
+
+    /* UI MOCKUP FRAMES */
+    .ui-frame {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--hairline-gold);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85);
+      background: #000;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ui-frame-bar {
+      height: 26px;
+      background: #0f1c16;
+      border-bottom: 1px solid var(--hairline);
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 6px;
+    }
+
+    .ui-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .ui-dot.red { background: #ff5f56; }
+    .ui-dot.yellow { background: #ffbd2e; }
+    .ui-dot.green { background: #27c93f; }
+
+    .ui-frame-title {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-left: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .ui-frame img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    /* SINGLE-PAGE SITEMAP GRID (SLIDE 3) */
+    .sitemap-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(3, auto);
+      gap: 16px;
+      flex: 1;
+      margin-top: 10px;
+    }
+
+    .sitemap-node {
+      background: rgba(14, 30, 23, 0.7);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .sitemap-node.highlight-gold {
+      border-left: 4px solid var(--glow);
+    }
+
+    .sitemap-node.highlight-green {
+      border-left: 4px solid #2ecc71;
+    }
+
+    .sitemap-node-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .sitemap-node-title {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      color: #fff;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sitemap-node-anchor {
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--glow);
+      background: rgba(227, 168, 87, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .sitemap-node-desc {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* FLOATING INTERACTIVE CONTROLS */
+    .presentation-controls {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(7, 16, 12, 0.9);
+      border: 1px solid var(--hairline-gold);
+      backdrop-filter: blur(20px);
+      border-radius: 999px;
+      padding: 8px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      z-index: 999999;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+    }
+
+    .control-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--hairline);
+      color: var(--text);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .control-btn:hover {
+      background: var(--glow);
+      color: #07100c;
+      border-color: var(--glow);
+    }
+
+    .control-counter {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      color: var(--glow);
+      padding: 0 8px;
+    }
+
+    .control-action-btn {
+      background: rgba(227, 168, 87, 0.15);
+      border: 1px solid var(--hairline-gold);
+      color: var(--glow);
+      padding: 8px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 12.5px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .control-action-btn:hover {
+      background: var(--glow);
+      color: #07100c;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- FLOATING INTERACTIVE CONTROLS -->
+  <div class="presentation-controls">
+    <button class="control-btn" id="btn-prev" onclick="navigateSlide(-1)" title="Önceki Slayt (Sol Ok)">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <span class="control-counter" id="slide-indicator">01 / 14</span>
+    <button class="control-btn" id="btn-next" onclick="navigateSlide(1)" title="Sonraki Slayt (Sağ Ok)">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+    <div style="width: 1px; height: 20px; background: var(--hairline);"></div>
+    <button class="control-action-btn" onclick="toggleFullscreen()" title="Tam Ekran (F)">
+      <i class="fa-solid fa-expand"></i> Tam Ekran
+    </button>
+    <button class="control-action-btn" onclick="window.print()" title="PDF Olarak Yazdır / Kaydet (P)">
+      <i class="fa-solid fa-file-pdf"></i> PDF İndir / Yazdır
+    </button>
+  </div>
+
+  <div class="slide-container">
+
+    <!-- =====================================================================
+         SLIDE 1: KAPAK & MARKA VİZYONU
+         ===================================================================== -->
+    <section class="slide" id="slide-1" style="background: radial-gradient(circle at 75% 30%, rgba(227, 168, 87, 0.12) 0%, rgba(14, 30, 23, 0.8) 50%, #07100c 90%), url('images/arena-hero-wide.jpg') center/cover no-repeat;">
+      <div style="position: absolute; inset:0; background: linear-gradient(90deg, #07100c 35%, rgba(7, 16, 12, 0.85) 60%, rgba(7, 16, 12, 0.3) 100%); z-index: 1;"></div>
+      
+      <div class="slide-content-wrap">
+        <div class="slide-header" style="border:none;">
+          <div class="slide-header-left">
+            <div class="slide-tag">HAUTE COUTURE SINGLE-PAGE ARCHITECTURE • RESMİ SUNUM DOSYASI</div>
+          </div>
+          <div class="slide-header-right">
+            <div class="slide-brand-pill">
+              <span class="dot"></span> STADIA ARENA
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 60px; max-width: 950px; z-index: 2;">
+          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: rgba(227, 168, 87, 0.15); border: 1px solid var(--hairline-gold); border-radius: 999px; font-size: 12px; color: var(--glow); font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 24px;">
+            <i class="fa-solid fa-crown"></i> TEK SAYFALI YENİ NESİL DİJİTAL STADYUM DENEYİMİ
+          </div>
+
+          <h1 style="font-family: var(--font-serif); font-size: 74px; font-weight: 500; line-height: 1.05; color: #ffffff; letter-spacing: -1px; margin-bottom: 24px;">
+            STADIA ARENA.<br>
+            <span style="color: var(--glow); font-style: italic;">Geleneksel Halısahadan</span><br>
+            Akıllı Dijital Mabede.
+          </h1>
+
+          <p style="font-size: 20px; line-height: 1.6; color: var(--text-muted); max-width: 820px; font-weight: 300; margin-bottom: 45px;">
+            Geleneksel halısaha kültürünü kökten değiştiren; 360° interaktif LED duvarlar, 8 açılı VAR konsolu, yapay zekâ sanal taraftar koreografisi ve Şampiyonlar Ligi atmosferine sahip tek sayfalı lüks web mimarisi.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; max-width: 920px;">
+            <div class="luxe-card gold-border" style="padding: 16px 20px;">
+              <div style="font-size: 24px; color: var(--glow); margin-bottom: 6px;"><i class="fa-solid fa-vr-cardboard"></i></div>
+              <div style="font-family: var(--font-serif); font-size: 18px; color: #fff; font-weight: 600;">360° LED Ekran</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Tüm sahayı saran dinamik şerit</div>
+            </div>
+            <div class="luxe-card gold-border" style="padding: 16px 20px;">
+              <div style="font-size: 24px; color: var(--glow); margin-bottom: 6px;"><i class="fa-solid fa-video"></i></div>
+              <div style="font-family: var(--font-serif); font-size: 18px; color: #fff; font-weight: 600;">8-Açılı 4K VAR</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Tartışmasız kesin hakem kararları</div>
+            </div>
+            <div class="luxe-card gold-border" style="padding: 16px 20px;">
+              <div style="font-size: 24px; color: var(--glow); margin-bottom: 6px;"><i class="fa-solid fa-van-shuttle"></i></div>
+              <div style="font-family: var(--font-serif); font-size: 18px; color: #fff; font-weight: 600;">VIP Ring Servis</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Maybach / V-Class özel transfer</div>
+            </div>
+            <div class="luxe-card gold-border" style="padding: 16px 20px;">
+              <div style="font-size: 24px; color: var(--glow); margin-bottom: 6px;"><i class="fa-solid fa-calculator"></i></div>
+              <div style="font-family: var(--font-serif); font-size: 18px; color: #fff; font-weight: 600;">14-18 Ay ROI</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Dinamik kârlılık & ciro simülatörü</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-footer-left">
+            <span>STADIA ARENA RESMİ DOKÜMANTASYON & MİMARİ SUNUMU</span>
+            <span>•</span>
+            <span>index.html TEK SAYFA MASTER SUNUMU</span>
+          </div>
+          <div class="slide-footer-right">
+            <span>SLAYT 01 / 14</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SLIDE 2: YÖNETİCİ ÖZETİ & DÖNÜŞÜM MANİFESTOSU
+         ===================================================================== -->
+    <section class="slide" id="slide-2">
+      <div class="slide-content-wrap">
+        <div class="slide-header">
+          <div class="slide-header-left">
+            <div class="slide-tag">01 • YÖNETİCİ ÖZETİ & SEKTÖREL DÖNÜŞÜM</div>
+            <h2 class="slide-title">Geleneksel Halısahadan <span>Lüks Stadyum Mimarisine</span></h2>
+            <p class="slide-subtitle">Yıllardır güncellenmeyen ilkel halısaha alışkanlıklarını, ultra lüks misafirperverlik ve derin teknolojiyle yeniden tanımlıyoruz.</p>
+          </div>
+          <div class="slide-header-right">
+            <div class="slide-brand-pill"><span class="dot"></span> MANİFESTO</div>
+            <div class="slide-page-num">02 / 14</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; flex: 1;">
+          <!-- PROBLEM / ESKİ DÜNYA -->
+          <div class="luxe-card" style="background: rgba(26, 12, 14, 0.4); border-color: rgba(231, 76, 60, 0.25);">
+            <div class="luxe-card-header">
+              <div class="luxe-icon-box" style="background: rgba(231, 76, 60, 0.15); border-color: rgba(231, 76, 60, 0.3); color: #e74c3c;">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+              </div>
+              <div>
+                <div style="font-size: 11px; color: #e74c3c; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;">Mevcut Pazar Problemi</div>
+                <h3 class="luxe-card-title">Geleneksel Halısaha Dünyası</h3>
+              </div>
+            </div>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 14px; margin-top: 10px;">
+              <li style="display: flex; gap: 12px; font-size: 14px; color: var(--text-muted);">
+                <i class="fa-solid fa-xmark" style="color: #e74c3c; margin-top: 4px;"></i>
+                <span><strong>İlkel Tesisler:</strong> Yıpranmış sert zeminler, yetersiz ışıklandırma, rutubetli ve kilitli olmayan soyunma odaları.</span>
+              </li>
+              <li style="display: flex; gap: 12px; font-size: 14px; color: var(--text-muted);">
+                <i class="fa-solid fa-xmark" style="color: #e74c3c; margin-top: 4px;"></i>
+                <span><strong>Sürekli Tartışma & Güvensizlik:</strong> Hakemsiz maçlarda bitmek bilmeyen faul ve ofsayt tartışmaları, maçın bölünmesi.</span>
+              </li>
+              <li style="display: flex; gap: 12px; font-size: 14px; color: var(--text-muted);">
+                <i class="fa-solid fa-xmark" style="color: #e74c3c; margin-top: 4px;"></i>
+                <span><strong>Kayıtsız & Kaybolan Anılar:</strong> Atılan efsane goller ve kritik kurtarışlar kayda alınamaz, maç bittiğinde anı kaybolur.</span>
+              </li>
+              <li style="display: flex; gap: 12px; font-size: 14px; color: var(--text-muted);">
+                <i class="fa-solid fa-xmark" style="color: #e74c3c; margin-top: 4px;"></i>
+                <span><strong>Sıradan Bekleme Alanları:</strong> Çay ocağı konseptinde dinlenme alanları, konfor ve lüks atmosferden yoksun çevre.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- ÇÖZÜM / STADIA ARENA -->
+          <div class="luxe-card gold-border" style="background: rgba(18, 38, 29, 0.65);">
+            <div class="luxe-card-header">
+              <div class="luxe-icon-box">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <div>
+                <div style="font-size: 11px; color: var(--glow); font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;">STADIA ARENA İnovasyonu</div>
+                <h3 class="luxe-card-title">Yeni Nesil Şampiyonlar Ligi Modeli</h3>
+              </div>
+            </div>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 14px; margin-top: 10px;">
+              <li style="display: flex; gap: 12px; font-size: 14px; color: var(--text);">
+                <i class="fa-solid fa-check" style="color: var(--glow); margin-top: 4px;"></i>
+                <span><strong>Akrilik Tünel & Sis Şovu:</strong> Sahaya müzik, anons ve sis eşliğinde adım atılan profesyonel seremoni ritüeli.</span>
+              </li>
+              <li style="display: flex; gap: 12px; font-size: 14px; color: var(--text);">
+                <i class="fa-solid fa-check" style="color: var(--glow); margin-top: 4px;"></i>
+                <span><strong>8 Kameralı VAR & 360° LED:</strong> Tartışmalı pozisyonlar 3 saniyede saha içi ekranda incelenir, gollerde sanal koro devreye girer.</span>
+              </li>
+              <li style="display: flex; gap: 12px; font-size: 14px; color: var(--text);">
+                <i class="fa-solid fa-check" style="color: var(--glow); margin-top: 4px;"></i>
+                <span><strong>5 Yıldızlı Soyunma Mabedi:</strong> Ahşap kaplamalı şifreli dolaplar, buz banyoları, taktik ekranı ve otel konseptli duşlar.</span>
+              </li>
+              <li style="display: flex; gap: 12px; font-size: 14px; color: var(--text);">
+                <i class="fa-solid fa-check" style="color: var(--glow); margin-top: 4px;"></i>
+                <span><strong>VIP Maybach Seferi & Basın Locası:</strong> Takımı evden alan lüks transfer servisi ve maç sonu basın toplantısı deneyimi.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="margin-top: 25px; padding: 18px 24px; background: rgba(227, 168, 87, 0.08); border: 1px solid var(--hairline-gold); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <i class="fa-solid fa-gem" style="font-size: 28px; color: var(--glow);"></i>
+            <div>
+              <div style="font-weight: 600; font-size: 15px; color: #fff;">"Quiet, slow, expensive. Haute Couture Edition."</div>
+              <div style="font-size: 13px; color: var(--text-muted);">Sadece bir futbol sahası değil; mimari, teknoloji ve lüks konukseverliğin mükemmel uyumla buluştuğu hibrit bir yaşam merkezi.</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <span class="metric-chip gold"><i class="fa-solid fa-crown"></i> 3.4x Saatlik Getiri</span>
+            <span class="metric-chip green"><i class="fa-solid fa-heart"></i> %96 Müşteri Sadakati</span>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-footer-left"><span>STADIA ARENA DEĞER ÖNERİSİ</span></div>
+          <div class="slide-footer-right"><span>SLAYT 02 / 14</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SLIDE 3: TEK SAYFA MASTER SİTE HARİTASI & TÜM BÖLÜMLERİN MANTIĞI
+         ===================================================================== -->
+    <section class="slide" id="slide-3">
+      <div class="slide-content-wrap">
+        <div class="slide-header">
+          <div class="slide-header-left">
+            <div class="slide-tag">02 • TEK SAYFA MASTER SİTE HARİTASI & AKIŞ MANTIĞI</div>
+            <h2 class="slide-title">index.html <span>Tam Mimari Haritası</span></h2>
+            <p class="slide-subtitle">Tek sayfalı web mimarimizin tüm dikey bölümleri, anchor bağlantıları, interaktif sistemleri ve kullanıcı etkileşim akışı.</p>
+          </div>
+          <div class="slide-header-right">
+            <div class="slide-brand-pill"><span class="dot"></span> SINGLE-PAGE SITEMAP</div>
+            <div class="slide-page-num">03 / 14</div>
+          </div>
+        </div>
+
+        <div class="sitemap-grid">
+          <!-- 1. HEADER & PROGRESS -->
+          <div class="sitemap-node highlight-gold">
+            <div class="sitemap-node-header">
+              <span class="sitemap-node-title"><i class="fa-solid fa-compass" style="color:var(--glow);"></i> Header & Rail</span>
+              <span class="sitemap-node-anchor">#main-nav</span>
+            </div>
+            <p class="sitemap-node-desc">Sabit lüks navbar, ses atmosferi aç/kapa butonu, sayfa scroll ilerleme çubuğu (#global-progress-fill) ve rezervasyon butonu.</p>
+          </div>
+
+          <!-- 2. HERO SCRUB -->
+          <div class="sitemap-node highlight-gold">
+            <div class="sitemap-node-header">
+              <span class="sitemap-node-title"><i class="fa-solid fa-play" style="color:var(--glow);"></i> Hero Scrub</span>
+              <span class="sitemap-node-anchor">#hero-scrub-section</span>
+            </div>
+            <p class="sitemap-node-desc">10 aşamalı sinematik video kare scrub motoru, 120 FPS Lenis scroll senkronizasyonu ve editoryal metin animasyonları.</p>
+          </div>
+
+          <!-- 3. MANİFESTO -->
+          <div class="sitemap-node highlight-gold">
+            <div class="sitemap-node-header">
+              <span class="sitemap-node-title"><i class="fa-solid fa-scroll" style="color:var(--glow);"></i> Manifesto</span>
+              <span class="sitemap-node-anchor">#manifesto</span>
+            </div>
+            <p class="sitemap-node-desc">Haute Couture felsefesi: Mükemmel Mühendislik, Lüks Konukseverlik ve Kesintisiz Teknoloji sütunları.</p>
+          </div>
+
+          <!-- 4. METAMORFOZ -->
+          <div class="sitemap-node highlight-green">
+            <div class="sitemap-node-header">
+              <span class="sitemap-node-title"><i class="fa-solid fa-wand-magic-sparkles" style="color:#2ecc71;"></i> Metamorfoz</span>
+              <span class="sitemap-node-anchor">#metamorphose</span>
+            </div>
+            <p class="sitemap-node-desc">3D LiDAR mekânsal tarama simülasyonu, lazer tarama çizgisi HUD'ı ve interaktif Before/After dönüşüm sliderı.</p>
+          </div>
+
+          <!-- 5. 360 DENEYİM -->
+          <div class="sitemap-node highlight-green">
+            <div class="sitemap-node-header">
+              <span class="sitemap-node-title"><i class="fa-solid fa-vr-cardboard" style="color:#2ecc71;"></i> 360° Deneyim</span>
+              <span class="sitemap-node-anchor">#deneyim</span>
+            </div>
+            <p class="sitemap-node-desc">6 mekânsal katman: Akrilik Tünel, 360° Işık Dokuması, VAR İstasyonu, Soyunma Mabedi, Basın Locası, Maybach Seferi.</p>
+          </div>
+
+          <!-- 6. TEKNOLOJİ & VAR -->
+          <div class="sitemap-node highlight-green">
+            <div class="sitemap-node-header">
+              <span class="sitemap-node-title"><i class="fa-solid fa-video" style="color:#2ecc71;"></i> Teknoloji & VAR</span>
+              <span class="sitemap-node-anchor">#teknoloji</span>
+            </div>
+            <p class="sitemap-node-desc">8-açılı 4K VAR konsolu, yapay zekâ sanal taraftar koreografisi, oyuncu takip çipleri ve otomatik ısı haritası.</p>
+          </div>
+
+          <!-- 7. GALERİ -->
+          <div class="sitemap-node highlight-green">
+            <div class="sitemap-node-header">
+              <span class="sitemap-node-title"><i class="fa-solid fa-images" style="color:#2ecc71;"></i> Ultra-HD Galeri</span>
+              <span class="sitemap-node-anchor">#galeri</span>
+            </div>
+            <p class="sitemap-node-desc">4K geniş açı stadyum çekimleri, mimari detaylar ve tam ekran interaktif Lightbox modal mimarisi (#lightbox-modal).</p>
+          </div>
+
+          <!-- 8. VIP TRANSFER -->
+          <div class="sitemap-node highlight-gold">
+            <div class="sitemap-node-header">
+              <span class="sitemap-node-title"><i class="fa-solid fa-van-shuttle" style="color:var(--glow);"></i> VIP Transfer</span>
+              <span class="sitemap-node-anchor">#transfer</span>
+            </div>
+            <p class="sitemap-node-desc">Mercedes Maybach / V-Class özel şoförlü transfer hizmeti, kapıdan alma ve stadyum karşılama lojistiği.</p>
+          </div>
+
+          <!-- 9. YATIRIM & ROI -->
+          <div class="sitemap-node highlight-gold">
+            <div class="sitemap-node-header">
+              <span class="sitemap-node-title"><i class="fa-solid fa-calculator" style="color:var(--glow);"></i> Dinamik ROI</span>
+              <span class="sitemap-node-anchor">#yatirim</span>
+            </div>
+            <p class="sitemap-node-desc">İnteraktif ciro simülatörü: Saatlik ücret, haftalık doluluk, kafe marjı ve LED reklam geliriyle canlı yıllık ciro hesabı.</p>
+          </div>
+
+          <!-- 10. REZERVASYON & FRANCHISE -->
+          <div class="sitemap-node highlight-gold">
+            <div class="sitemap-node-header">
+              <span class="sitemap-node-title"><i class="fa-solid fa-paper-plane" style="color:var(--glow);"></i> Başvuru Konsolu</span>
+              <span class="sitemap-node-anchor">#basvuru</span>
+            </div>
+            <p class="sitemap-node-desc">Çift yönlü form: Oyuncu Maç & VIP Saha Rezervasyonu veya Yatırımcı / Franchise Ortaklık Başvurusu.</p>
+          </div>
+
+          <!-- 11. FOOTER -->
+          <div class="sitemap-node highlight-gold">
+            <div class="sitemap-node-header">
+              <span class="sitemap-node-title"><i class="fa-solid fa-location-dot" style="color:var(--glow);"></i> Showroom & Footer</span>
+              <span class="sitemap-node-anchor">footer</span>
+            </div>
+            <p class="sitemap-node-desc">Vadistanbul Bulvar lokasyonu, kurumsal iletişim hatları, çalışma saatleri ve telif hakları beyanı.</p>
+          </div>
+
+          <!-- 12. ETKİLEŞİM MANTIĞI -->
+          <div class="sitemap-node" style="border: 1px dashed var(--glow); background: rgba(227,168,87,0.06);">
+            <div class="sitemap-node-header">
+              <span class="sitemap-node-title"><i class="fa-solid fa-bolt" style="color:var(--glow);"></i> Akış & Mantık</span>
+              <span class="sitemap-node-anchor">Tek Sayfa UX</span>
+            </div>
+            <p class="sitemap-node-desc">Kullanıcı sayfada yukarıdan aşağıya akıcı biçimde kayarak stadyumu tecrübe eder; hiçbir sayfa yenilenmesi olmadan tek ekranda tamamlanır.</p>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-footer-left"><span>STADIA ARENA TEK SAYFALI WEB MİMARİSİ HARİTASI</span></div>
+          <div class="slide-footer-right"><span>SLAYT 03 / 14</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SLIDE 4: HERO SCRUBBING & 10 ANLATI FAZI
+         ===================================================================== -->
+    <section class="slide" id="slide-4">
+      <div class="slide-content-wrap">
+        <div class="slide-header">
+          <div class="slide-header-left">
+            <div class="slide-tag">03 • HERO KARŞILAMA MİMARİSİ (#hero-scrub-section)</div>
+            <h2 class="slide-title">Hero Scrubbing: <span>10-Aşamalı Sinematik Kurgu</span></h2>
+            <p class="slide-subtitle">Kullanıcının sayfayı kaydırdıkça tecrübe ettiği 120 FPS akıcılığındaki video kare scrub tekniği ve editoryal metin hiyerarşisi.</p>
+          </div>
+          <div class="slide-header-right">
+            <div class="slide-brand-pill"><span class="dot"></span> HERO SCRUB</div>
+            <div class="slide-page-num">04 / 14</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 30px; flex: 1;">
+          <!-- CANLI EKRAN GÖRÜNTÜSÜ -->
+          <div class="ui-frame">
+            <div class="ui-frame-bar">
+              <span class="ui-dot red"></span>
+              <span class="ui-dot yellow"></span>
+              <span class="ui-dot green"></span>
+              <span class="ui-frame-title">https://stadiaarena.com/ — Hero Video Scrub Aşaması</span>
+            </div>
+            <div style="flex:1; overflow:hidden; position:relative;">
+              <img src="presentation_assets/index_hero.png" alt="Hero Screen Capture">
+              <div style="position: absolute; bottom: 15px; left: 15px; right: 15px; background: rgba(7, 16, 12, 0.88); border: 1px solid var(--hairline-gold); border-radius: 10px; padding: 12px 18px; backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between;">
+                <div style="font-size: 13px; color: var(--text);">
+                  <strong style="color: var(--glow);">Aktif Anlatı:</strong> "Zafer Planı — Taktik tahtasında çizilen kader sahada gerçek olur."
+                </div>
+                <span class="metric-chip gold">Kare #68 / 180</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ANLATIM FAZLARI VE TEKNİK DETAY -->
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="luxe-card gold-border">
+              <h3 class="luxe-card-title" style="margin-bottom: 8px;">10-Fazlı Sinematik Yolculuk Mantığı</h3>
+              <p class="luxe-card-desc" style="margin-bottom: 12px;">Kullanıcı scroll yaptıkça GSAP ScrollTrigger ve Lenis motoru video karelerini bir film şeridi gibi oynatır ve metinler organik olarak ekranda belirir:</p>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px;">
+                <div style="padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; border-left: 2px solid var(--glow);">
+                  <strong>1. Her Detayda</strong> — Lüks Giriş
+                </div>
+                <div style="padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; border-left: 2px solid var(--glow);">
+                  <strong>2. Sahaya Çıkmadan</strong> — Odaklanma
+                </div>
+                <div style="padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; border-left: 2px solid var(--glow);">
+                  <strong>3. Zafer Planı</strong> — Taktik Tahtası
+                </div>
+                <div style="padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; border-left: 2px solid var(--glow);">
+                  <strong>4. Sahne</strong> — Akrilik Cam Tünel
+                </div>
+                <div style="padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; border-left: 2px solid var(--glow);">
+                  <strong>5. Saha</strong> — 360° LED Canlı Işık
+                </div>
+                <div style="padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; border-left: 2px solid var(--glow);">
+                  <strong>6. Tartışma Bitti</strong> — VAR Konsolu
+                </div>
+                <div style="padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; border-left: 2px solid var(--glow);">
+                  <strong>7. Zaferin Coşkusu</strong> — Sanal Tribün
+                </div>
+                <div style="padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; border-left: 2px solid var(--glow);">
+                  <strong>8. Basın Locası</strong> — Flaş Röportaj
+                </div>
+              </div>
+            </div>
+
+            <div class="luxe-card" style="flex:1;">
+              <h3 class="luxe-card-title" style="margin-bottom: 8px;">Kusursuz Performans & Tipografi</h3>
+              <p class="luxe-card-desc">
+                • <strong>Cormorant Garamond:</strong> Haute Couture moda dergilerinin editoryal zarafetini stadyum gücüyle birleştirir.<br>
+                • <strong>Lenis Smooth Scroll:</strong> Mouse tekerleği ivmesini fiziksel kamera süzülüşü gibi yumuşatır.<br>
+                • <strong>Global Progress Rail:</strong> Ekranın en üstünde kullanıcının sayfada nerede olduğunu gösteren 2px altın kılavuz rayı.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-footer-left"><span>HERO SCRUB DENEYİMİ VE ANLATI AKIŞI</span></div>
+          <div class="slide-footer-right"><span>SLAYT 04 / 14</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SLIDE 5: MANİFESTO & TASARIM FELSEFESİ
+         ===================================================================== -->
+    <section class="slide" id="slide-5">
+      <div class="slide-content-wrap">
+        <div class="slide-header">
+          <div class="slide-header-left">
+            <div class="slide-tag">04 • MANİFESTO & MARKA FELSEFESİ (#manifesto)</div>
+            <h2 class="slide-title">Manifesto: <span>"Geleneksel Halısahanın Ötesinde"</span></h2>
+            <p class="slide-subtitle">Sitenin görsel ve felsefi duruşunu belirleyen Haute Couture tasarım dili ve 3 kurumsal mimari temel direk.</p>
+          </div>
+          <div class="slide-header-right">
+            <div class="slide-brand-pill"><span class="dot"></span> PHILOSOPHY</div>
+            <div class="slide-page-num">05 / 14</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 30px; flex: 1;">
+          <!-- REAL SCREENSHOT -->
+          <div class="ui-frame">
+            <div class="ui-frame-bar">
+              <span class="ui-dot red"></span>
+              <span class="ui-dot yellow"></span>
+              <span class="ui-dot green"></span>
+              <span class="ui-frame-title">https://stadiaarena.com/#manifesto — Manifesto Bölümü</span>
+            </div>
+            <div style="flex:1; overflow:hidden;">
+              <img src="presentation_assets/index_manifesto.png" alt="Manifesto Section">
+            </div>
+          </div>
+
+          <!-- FELSEFİ SÜTUNLAR -->
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="luxe-card gold-border">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-compass-drafting"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">Mükemmel Mühendislik</h3>
+                  <div style="font-size: 12px; color: var(--glow);">FIFA Quality Pro Standardı</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">FIFA standartlarında hibrit çim dokuması, alttan ısıtmalı zemin, yankı engelleyici akustik tavan yalıtımı ve mimari aydınlatma armatürleri.</p>
+            </div>
+
+            <div class="luxe-card">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-bell-concierge"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">Lüks Konukseverlik</h3>
+                  <div style="font-size: 12px; color: #2ecc71;">5 Yıldızlı Ağırlama</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">Kişiye özel akıllı şifreli dolaplar, özel duş kabinleri, buz banyoları, gurme barista kahvesi ve özel şoförlü VIP ring servisleri.</p>
+            </div>
+
+            <div class="luxe-card">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-microchip"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">Kesintisiz Teknoloji</h3>
+                  <div style="font-size: 12px; color: #3498db;">Yapay Zekâ Destekli Zemin</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">8-kameralı 4K VAR sistemi, 360° interaktif çevre LED panoları, yapay zekâ sanal taraftar tezahüratı ve anlık oyuncu takip çipleri.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-footer-left"><span>MANİFESTO VE KURUMSAL DEĞERLER</span></div>
+          <div class="slide-footer-right"><span>SLAYT 05 / 14</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SLIDE 6: METAMORFOZ & 3D LAZER TARAMA SİSTEMİ
+         ===================================================================== -->
+    <section class="slide" id="slide-6">
+      <div class="slide-content-wrap">
+        <div class="slide-header">
+          <div class="slide-header-left">
+            <div class="slide-tag">05 • DÖNÜŞÜM MİMARİSİ (#metamorphose)</div>
+            <h2 class="slide-title">Metamorfoz: <span>3D LiDAR Lazer Tarama HUD</span></h2>
+            <p class="slide-subtitle">Sitenin en etkileyici teknik bölümlerinden biri olan mekânsal lazer tarama animasyonu ve dönüşüm adımları.</p>
+          </div>
+          <div class="slide-header-right">
+            <div class="slide-brand-pill"><span class="dot"></span> METAMORPHOSE</div>
+            <div class="slide-page-num">06 / 14</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 30px; flex: 1;">
+          <!-- REAL SCREENSHOT -->
+          <div class="ui-frame">
+            <div class="ui-frame-bar">
+              <span class="ui-dot red"></span>
+              <span class="ui-dot yellow"></span>
+              <span class="ui-dot green"></span>
+              <span class="ui-frame-title">https://stadiaarena.com/#metamorphose — Lazer Tarama Sistemi</span>
+            </div>
+            <div style="flex:1; overflow:hidden;">
+              <img src="presentation_assets/index_metamorphose.png" alt="Metamorphose Section">
+            </div>
+          </div>
+
+          <!-- LAZER SİSTEMİ BİLEŞENLERİ -->
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="luxe-card gold-border">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-laser"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">Mekânsal HUD Arayüzü</h3>
+                  <div style="font-size: 12px; color: var(--glow);">#laser-scan-system</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">Kullanıcı bölüme geldiğinde altın renkli tarama ışını (#laser-sweep-line) yukarıdan aşağıya kayarak sahanın mimari sınırlarını, tavan yüksekliğini ve ses yansıma noktalarını tarar.</p>
+            </div>
+
+            <div class="luxe-card">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-clock"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">45 Günlük Dönüşüm Süreci</h3>
+                  <div style="font-size: 12px; color: #2ecc71;">Hızlı Kurulum</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">Eski tel örgülerin sökülmesi, akustik panellerin yerleştirilmesi, şok emici alt katmanın serilmesi ve 360° LED panoların montajı 45 iş günü içinde tamamlanır.</p>
+            </div>
+
+            <div class="luxe-card">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">Akıllı Dijital İkiz</h3>
+                  <div style="font-size: 12px; color: #3498db;">Milimetrik Kalibrasyon</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">Lazer tarama ile çıkarılan 3D model, VAR kameralarının ve yapay zekâ sensörlerinin milimetrik doğrulukla konumlandırılmasını sağlar.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-footer-left"><span>3D LAZER TARAMA VE SAHA MÜHENDİSLİĞİ</span></div>
+          <div class="slide-footer-right"><span>SLAYT 06 / 14</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SLIDE 7: İNTERAKTİF BEFORE / AFTER DÖNÜŞÜM SLIDERI
+         ===================================================================== -->
+    <section class="slide" id="slide-7">
+      <div class="slide-content-wrap">
+        <div class="slide-header">
+          <div class="slide-header-left">
+            <div class="slide-tag">06 • İNTERAKTİF ETKİLEŞİM (#donusum-karsilastirma)</div>
+            <h2 class="slide-title">Dönüşüm Karşılaştırması: <span>Before / After Slider</span></h2>
+            <p class="slide-subtitle">Kullanıcının parmak veya mouse hareketiyle milimetrik olarak kaydırdığı gerçek zamanlı saha dönüşüm modülü.</p>
+          </div>
+          <div class="slide-header-right">
+            <div class="slide-brand-pill"><span class="dot"></span> COMPARE SLIDER</div>
+            <div class="slide-page-num">07 / 14</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 30px; flex: 1;">
+          <!-- BEFORE / AFTER GÖRSEL ALANI -->
+          <div class="ui-frame" style="position:relative;">
+            <div class="ui-frame-bar">
+              <span class="ui-dot red"></span>
+              <span class="ui-dot yellow"></span>
+              <span class="ui-dot green"></span>
+              <span class="ui-frame-title">#couture-compare-box — İnteraktif Karşılaştırma</span>
+            </div>
+            <div style="flex:1; position:relative; overflow:hidden;">
+              <!-- BEFORE LAYER -->
+              <img src="images/transformation-before.jpg" alt="Eski Halısaha" style="width:100%; height:100%; object-fit:cover;">
+              
+              <!-- AFTER LAYER (OVERLAY) -->
+              <div style="position:absolute; top:0; left:0; width:52%; height:100%; overflow:hidden; border-right: 2px solid var(--glow); box-shadow: 0 0 25px rgba(227,168,87,0.8);">
+                <img src="images/transformation-after.jpg" alt="STADIA ARENA" style="position:absolute; top:0; left:0; width:1000px; height:100%; max-width:none; object-fit:cover;">
+                <span class="metric-chip gold" style="position:absolute; bottom:20px; left:20px; font-weight:600;"><i class="fa-solid fa-crown"></i> SONRA: STADIA ARENA</span>
+              </div>
+
+              <span class="metric-chip" style="position:absolute; bottom:20px; right:20px; background:rgba(0,0,0,0.7); color:#ff6b6b; border-color:rgba(255,107,107,0.3);"><i class="fa-solid fa-xmark"></i> ÖNCE: Standart Saha</span>
+
+              <!-- SLIDER HANDLE -->
+              <div style="position:absolute; top:50%; left:52%; transform:translate(-50%, -50%); width:44px; height:44px; border-radius:50%; background:var(--glow); color:#07100c; display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(227,168,87,0.9); font-size:16px;">
+                <i class="fa-solid fa-arrows-left-right"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- ETKİLEŞİM VE TEKNİK DETAY -->
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="luxe-card gold-border">
+              <h3 class="luxe-card-title" style="margin-bottom: 8px;">Karşılaştırma Modülünün Kod Mantığı</h3>
+              <p class="luxe-card-desc" style="margin-bottom: 12px;">Mouse veya touch hareketi dinlenerek `updateSplit(x)` fonksiyonu tetiklenir. Üst katmanın (`#compare-after-layer`) genişliği dinamik yüzde olarak hesaplanır:</p>
+              
+              <div style="background: rgba(0,0,0,0.5); padding: 12px 14px; border-radius: 8px; font-family: monospace; font-size: 12px; color: var(--glow); border: 1px solid var(--hairline);">
+                let pct = (clientX - boxRect.left) / boxRect.width * 100;<br>
+                afterLayer.style.width = pct + '%';<br>
+                divider.style.left = pct + '%';
+              </div>
+            </div>
+
+            <div class="luxe-card">
+              <h3 class="luxe-card-title" style="margin-bottom: 8px;">Göz Alıcı Görsel Fark</h3>
+              <p class="luxe-card-desc">
+                • <strong>Aydınlatma:</strong> Sarı loş halojen lambalar yerine homojen stadyum LED projektörleri.<br>
+                • <strong>Perimetre:</strong> Paslı tel örgüler yerine 360° kesintisiz interaktif dijital LED panolar.<br>
+                • <strong>Zemin:</strong> Sert kumlu granül yerine şok emici hibrit zemin.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-footer-left"><span>İNTERAKTİF DÖNÜŞÜM SLIDERI VE MANTIĞI</span></div>
+          <div class="slide-footer-right"><span>SLAYT 07 / 14</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SLIDE 8: 360° DENEYİM KATMANLARI
+         ===================================================================== -->
+    <section class="slide" id="slide-8">
+      <div class="slide-content-wrap">
+        <div class="slide-header">
+          <div class="slide-header-left">
+            <div class="slide-tag">07 • MEKÂNSAL DENEYİM KATMANLARI (#deneyim)</div>
+            <h2 class="slide-title">360° Deneyim: <span>Saha İçi & Dışı Lüks Yolculuk</span></h2>
+            <p class="slide-subtitle">Sitenin "#deneyim" bölümünde sergilenen 6 mekânsal ritüel: Akrilik tünelden basın locasına, Maybach transferinden soyunma odasına.</p>
+          </div>
+          <div class="slide-header-right">
+            <div class="slide-brand-pill"><span class="dot"></span> 360° EXPERIENCE</div>
+            <div class="slide-page-num">08 / 14</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 30px; flex: 1;">
+          <!-- REAL SCREENSHOT -->
+          <div class="ui-frame">
+            <div class="ui-frame-bar">
+              <span class="ui-dot red"></span>
+              <span class="ui-dot yellow"></span>
+              <span class="ui-dot green"></span>
+              <span class="ui-frame-title">https://stadiaarena.com/#deneyim — Deneyim Katmanları</span>
+            </div>
+            <div style="flex:1; overflow:hidden;">
+              <img src="presentation_assets/index_experience.png" alt="Experience Section">
+            </div>
+          </div>
+
+          <!-- 6 MEKÂNSAL RİTÜEL LİSTESİ -->
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="luxe-card" style="padding: 12px 16px;">
+              <div style="font-weight: 600; font-size: 14.5px; color: #fff; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-door-open" style="color:var(--glow);"></i> 1. Akrilik Cam Tünel & Sis
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">Şampiyonlar Ligi müziği ve tünelden sahaya yükselen soğuk sis eşliğinde sahaya adım atış.</div>
+            </div>
+
+            <div class="luxe-card" style="padding: 12px 16px;">
+              <div style="font-weight: 600; font-size: 14.5px; color: #fff; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-vr-cardboard" style="color:var(--glow);"></i> 2. 360° Işık Dokuması
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">Sahanın dört bir yanını saran, pozisyonlara göre renk ve animasyon değiştiren LED duvarlar.</div>
+            </div>
+
+            <div class="luxe-card" style="padding: 12px 16px;">
+              <div style="font-weight: 600; font-size: 14.5px; color: #fff; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-video" style="color:var(--glow);"></i> 3. Kusursuz Hakikat (VAR)
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">Tartışmasız ve adil kararlar sağlayan saha kenarı çoklu açı hakem inceleme ekranı.</div>
+            </div>
+
+            <div class="luxe-card" style="padding: 12px 16px;">
+              <div style="font-weight: 600; font-size: 14.5px; color: #fff; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-lock" style="color:var(--glow);"></i> 4. Sessizliğin Mabedi
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">Ahşap kaplamalı şifreli kişisel dolaplar, buz banyosu, taktik ekranı ve lüks duşlar.</div>
+            </div>
+
+            <div class="luxe-card" style="padding: 12px 16px;">
+              <div style="font-weight: 600; font-size: 14.5px; color: #fff; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-microphone" style="color:var(--glow);"></i> 5. Basın Locası & Röportaj
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">Maç biter bitmez sponsor logolu fon önünde mikrofonlu flaş röportaj ve 4K video çıktısı.</div>
+            </div>
+
+            <div class="luxe-card" style="padding: 12px 16px;">
+              <div style="font-weight: 600; font-size: 14.5px; color: #fff; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-van-shuttle" style="color:var(--glow);"></i> 6. Gece Maç Seferi (Shuttle)
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">Takımı evlerinden alıp stadyuma getiren özel şoförlü Mercedes Maybach ring servisi.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-footer-left"><span>360 DERECE MEKÂNSAL DENEYİM KATMANLARI</span></div>
+          <div class="slide-footer-right"><span>SLAYT 08 / 14</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SLIDE 9: DERİN TEKNOLOJİ & 8-AÇILI 4K VAR İSTASYONU
+         ===================================================================== -->
+    <section class="slide" id="slide-9">
+      <div class="slide-content-wrap">
+        <div class="slide-header">
+          <div class="slide-header-left">
+            <div class="slide-tag">08 • TEKNOLOJİ ALTYAPISI (#teknoloji)</div>
+            <h2 class="slide-title">Derin Teknoloji: <span>8-Açılı 4K VAR & Sanal Tribün</span></h2>
+            <p class="slide-subtitle">Sahanın her açısını milimetrik kaydeden çoklu kamera ağı, otomatik ofsayt çizgisi ve taraftar sesini simüle eden akıllı ses motoru.</p>
+          </div>
+          <div class="slide-header-right">
+            <div class="slide-brand-pill"><span class="dot"></span> VAR & DEEP TECH</div>
+            <div class="slide-page-num">09 / 14</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 30px; flex: 1;">
+          <!-- REAL SCREENSHOT -->
+          <div class="ui-frame">
+            <div class="ui-frame-bar">
+              <span class="ui-dot red"></span>
+              <span class="ui-dot yellow"></span>
+              <span class="ui-dot green"></span>
+              <span class="ui-frame-title">https://stadiaarena.com/#teknoloji — Teknoloji & VAR</span>
+            </div>
+            <div style="flex:1; overflow:hidden;">
+              <img src="presentation_assets/index_tech.png" alt="Technology Section">
+            </div>
+          </div>
+
+          <!-- TEKNOLOJİ DETAYLARI -->
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="luxe-card gold-border">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-video"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">8-Kameralı Ultra-HD VAR Konsolu</h3>
+                  <div style="font-size: 12px; color: var(--glow);">Saha Kenarı İnceleme Ekranı</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">Kale çizgileri, ofsayt paralelleri, köşe vuruşları ve tepe kuşbakışı kameralarıyla şüpheli her pozisyon 3 saniye içinde saha kenarındaki hakem monitörüne yansıtılır.</p>
+            </div>
+
+            <div class="luxe-card">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-bullhorn"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">Yapay Zekâ Sanal Tribün & Koro</h3>
+                  <div style="font-size: 12px; color: #2ecc71;">Dinamik Ses & Görsel Reaksiyon</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">Maçın heyecanına göre yükselen tezahüratlar, kaçan pozisyonlardaki uğultu ve gol anında 360° LED panolarda patlayan görsel ışık şöleni.</p>
+            </div>
+
+            <div class="luxe-card">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-fire"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">GPS Oyuncu Takip & Isı Haritaları</h3>
+                  <div style="font-size: 12px; color: #3498db;">Maç Sonu İstatistikleri</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">Her oyuncunun maç boyunca koştuğu toplam mesafe, en yüksek sprint hızı, pas isabet yüzdesi ve sahayı kullanım ısı haritası maç bitiminde oluşturulur.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-footer-left"><span>VAR HAKEM SİSTEMİ VE YAPAY ZEKÂ SANAL TRİBÜN MİMARİSİ</span></div>
+          <div class="slide-footer-right"><span>SLAYT 09 / 14</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SLIDE 10: ULTRA-HD GALERİ & LIGHTBOX MOTORU
+         ===================================================================== -->
+    <section class="slide" id="slide-10">
+      <div class="slide-content-wrap">
+        <div class="slide-header">
+          <div class="slide-header-left">
+            <div class="slide-tag">09 • MEDYA VE GÖRSEL MİMARİ (#galeri)</div>
+            <h2 class="slide-title">Ultra-HD Galeri: <span>İnteraktif Lightbox Motoru</span></h2>
+            <p class="slide-subtitle">Sitenin 4K fotoğraf ve video portföyünü tam ekran lüks pencerede sergileyen `#lightbox-modal` mimarisi.</p>
+          </div>
+          <div class="slide-header-right">
+            <div class="slide-brand-pill"><span class="dot"></span> LIGHTBOX ENGINE</div>
+            <div class="slide-page-num">10 / 14</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 30px; flex: 1;">
+          <!-- REAL SCREENSHOT -->
+          <div class="ui-frame">
+            <div class="ui-frame-bar">
+              <span class="ui-dot red"></span>
+              <span class="ui-dot yellow"></span>
+              <span class="ui-dot green"></span>
+              <span class="ui-frame-title">https://stadiaarena.com/#galeri — Ultra-HD Portföy</span>
+            </div>
+            <div style="flex:1; overflow:hidden;">
+              <img src="presentation_assets/index_gallery.png" alt="Gallery Section">
+            </div>
+          </div>
+
+          <!-- LIGHTBOX VE MEDYA DETAYLARI -->
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="luxe-card gold-border">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-expand"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">Tam Ekran Lightbox Modalı</h3>
+                  <div style="font-size: 12px; color: var(--glow);">#lightbox-modal</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">Kullanıcı galerideki herhangi bir fotoğrafa tıkladığında arka plan kararır (backdrop-filter: blur), görsel orijinal 4K kalitesinde ortalanır ve başlık bilgisi (#lightbox-caption) zarifçe belirir.</p>
+            </div>
+
+            <div class="luxe-card">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-keyboard"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">Klavye & Dokunmatik Kontrol</h3>
+                  <div style="font-size: 12px; color: #2ecc71;">Erişilebilirlik</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">`Escape` tuşu ile kapatma, sağ/sol ok tuşlarıyla fotoğraflar arasında gezinme ve mobil cihazlarda parmakla kaydırma (swipe) tam uyumlu olarak çalışır.</p>
+            </div>
+
+            <div class="luxe-card">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-camera"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">50+ Ultra-HD Mimari Çekim</h3>
+                  <div style="font-size: 12px; color: #3498db;">Küratörlü Portföy</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">Gece stadyum silüeti, akrilik tünel giriş açısı, VAR konsol monitörleri, soyunma odası ahşap detayları ve LED duvar ambiyansı.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-footer-left"><span>ULTRA-HD MEDYA VE LIGHTBOX MODAL MİMARİSİ</span></div>
+          <div class="slide-footer-right"><span>SLAYT 10 / 14</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SLIDE 11: V.I.P. TRANSFER & CONCIERGE HİZMETİ
+         ===================================================================== -->
+    <section class="slide" id="slide-11">
+      <div class="slide-content-wrap">
+        <div class="slide-header">
+          <div class="slide-header-left">
+            <div class="slide-tag">10 • VIP AĞIRLAMA VE LOJİSTİK (#transfer)</div>
+            <h2 class="slide-title">V.I.P. Transfer: <span>Özel Maybach Ring Servisi</span></h2>
+            <p class="slide-subtitle">Takımları evlerinden alıp stadyuma ulaştıran ve maç sonu geri bırakan özel şoförlü VIP concierge transfer hizmeti.</p>
+          </div>
+          <div class="slide-header-right">
+            <div class="slide-brand-pill"><span class="dot"></span> VIP CONCIERGE</div>
+            <div class="slide-page-num">11 / 14</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 30px; flex: 1;">
+          <!-- REAL SCREENSHOT -->
+          <div class="ui-frame">
+            <div class="ui-frame-bar">
+              <span class="ui-dot red"></span>
+              <span class="ui-dot yellow"></span>
+              <span class="ui-dot green"></span>
+              <span class="ui-frame-title">https://stadiaarena.com/#transfer — V.I.P. Transfer Bölümü</span>
+            </div>
+            <div style="flex:1; overflow:hidden;">
+              <img src="presentation_assets/index_transfer.png" alt="Transfer Section">
+            </div>
+          </div>
+
+          <!-- VIP TRANSFER ÖZELLİKLERİ -->
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="luxe-card gold-border">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-van-shuttle"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">Mercedes Maybach / V-Class Filosu</h3>
+                  <div style="font-size: 12px; color: var(--glow);">Özel Şoförlü Lüks Servis</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">Deri koltuklu, ikramlı, PlayStation konsollu ve taktik hazırlık ekranlı ultra lüks VIP transfer araçları takımı kapıdan alır.</p>
+            </div>
+
+            <div class="luxe-card">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-champagne-glasses"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">Stadyum VIP Lounge Karşılama</h3>
+                  <div style="font-size: 12px; color: #2ecc71;">Kapıdan Sahaya Kesintisiz Akış</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">Araçtan inen oyuncular doğrudan özel VIP lobiye alınır; hoş geldiniz içecekleri ve soyunma odası kartları teslim edilir.</p>
+            </div>
+
+            <div class="luxe-card">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-calendar-check"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">Rezervasyon Formu Entegrasyonu</h3>
+                  <div style="font-size: 12px; color: #3498db;">Tek Tıkla Talep</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">Kullanıcı sitedeki rezervasyon formundan tek bir kutucuğu işaretleyerek maç saati için VIP ring servisini rezerve edebilir.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-footer-left"><span>V.I.P. TRANSFER VE LÜKS LOJİSTİK MİMARİSİ</span></div>
+          <div class="slide-footer-right"><span>SLAYT 11 / 14</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SLIDE 12: DİNAMİK ROI VE CİRO HESAPLAYICI MANTIĞI
+         ===================================================================== -->
+    <section class="slide" id="slide-12">
+      <div class="slide-content-wrap">
+        <div class="slide-header">
+          <div class="slide-header-left">
+            <div class="slide-tag">11 • YATIRIM VE FRANCHISE FİNANSI (#yatirim)</div>
+            <h2 class="slide-title">Yatırım & ROI: <span>Dinamik Ciro Simülatörü</span></h2>
+            <p class="slide-subtitle">Sitenin yatırımcılar için geliştirdiği etkileşimli yıllık ciro hesaplayıcısının formülü, gelir kaynakları ve amortisman modeli.</p>
+          </div>
+          <div class="slide-header-right">
+            <div class="slide-brand-pill"><span class="dot"></span> DYNAMIC ROI</div>
+            <div class="slide-page-num">12 / 14</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 30px; flex: 1;">
+          <!-- REAL SCREENSHOT -->
+          <div class="ui-frame">
+            <div class="ui-frame-bar">
+              <span class="ui-dot red"></span>
+              <span class="ui-dot yellow"></span>
+              <span class="ui-dot green"></span>
+              <span class="ui-frame-title">https://stadiaarena.com/#yatirim — Dinamik ROI Simülatörü</span>
+            </div>
+            <div style="flex:1; overflow:hidden;">
+              <img src="presentation_assets/index_investment.png" alt="Investment Section">
+            </div>
+          </div>
+
+          <!-- FORMÜL VE GELİR AKIŞLARI -->
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="luxe-card gold-border">
+              <h3 class="luxe-card-title" style="margin-bottom: 8px;">Hesaplama Algoritması & Formülü</h3>
+              <p class="luxe-card-desc" style="margin-bottom: 12px;">Kullanıcı sliderları kaydırdıkça JavaScript anında aşağıdaki formülü hesaplayarak `#roi-annual-revenue` elementini günceller:</p>
+              
+              <div style="background: rgba(0,0,0,0.5); padding: 12px 14px; border-radius: 8px; font-family: monospace; font-size: 11.5px; color: var(--glow); border: 1px solid var(--hairline);">
+                let sahaYillik = haftalikSaat * saatUcret * 52;<br>
+                let kafeYillik = sahaYillik * 0.40; // %40 bistro harcaması<br>
+                let ledReklamYillik = 1800000; // 360 LED reklam havuzu<br>
+                let toplamCiro = sahaYillik + kafeYillik + ledReklamYillik;
+              </div>
+            </div>
+
+            <div class="luxe-card">
+              <h3 class="luxe-card-title" style="margin-bottom: 8px;">Yatırımcının 4 Büyük Gelir Kalemi</h3>
+              <div style="font-size: 13px; color: var(--text-muted); display:flex; flex-direction:column; gap:6px;">
+                <div><strong style="color:#fff;">1. Saha Kirası:</strong> Haftalık 55-65 saat prime-time doluluk.</div>
+                <div><strong style="color:#fff;">2. Kafe & Bistro:</strong> Kahve, enerji içeceği ve loca siparişleri (%65 brüt kâr).</div>
+                <div><strong style="color:#fff;">3. 360° LED Reklam:</strong> Saha içi perimetre LED panolarında sponsorluklar.</div>
+                <div><strong style="color:#fff;">4. Turnuva Katılımı:</strong> Kurumsal ve şirketler arası lig paketleri.</div>
+              </div>
+            </div>
+
+            <div style="padding: 12px 16px; background: rgba(69,230,157,0.1); border: 1px solid rgba(69,230,157,0.3); border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 13px; color: #fff;">Ortalama Amortisman (ROI):</span>
+              <strong style="color:#45e69d; font-size: 15px;">14 - 18 Ay</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-footer-left"><span>FİNANSAL CİRO SİMÜLATÖRÜ VE İŞ MODELİ</span></div>
+          <div class="slide-footer-right"><span>SLAYT 12 / 14</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SLIDE 13: ÇİFT AMAÇLI BAŞVURU VE REZERVASYON KONSOLU
+         ===================================================================== -->
+    <section class="slide" id="slide-13">
+      <div class="slide-content-wrap">
+        <div class="slide-header">
+          <div class="slide-header-left">
+            <div class="slide-tag">12 • ETKİLEŞİM VE BAŞVURU SİSTEMİ (#basvuru)</div>
+            <h2 class="slide-title">Başvuru Konsolu: <span>Rezervasyon & Franchise</span></h2>
+            <p class="slide-subtitle">Tek sayfalı sitemizin dönüşüm sağlayan çift amaçlı akıllı başvuru formu ve veri doğrulama mimarisi.</p>
+          </div>
+          <div class="slide-header-right">
+            <div class="slide-brand-pill"><span class="dot"></span> BOOKING ENGINE</div>
+            <div class="slide-page-num">13 / 14</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 30px; flex: 1;">
+          <!-- REAL SCREENSHOT -->
+          <div class="ui-frame">
+            <div class="ui-frame-bar">
+              <span class="ui-dot red"></span>
+              <span class="ui-dot yellow"></span>
+              <span class="ui-dot green"></span>
+              <span class="ui-frame-title">https://stadiaarena.com/#basvuru — Başvuru ve İletişim Konsolu</span>
+            </div>
+            <div style="flex:1; overflow:hidden;">
+              <img src="presentation_assets/index_contact.png" alt="Contact Section">
+            </div>
+          </div>
+
+          <!-- FORMUN İKİ KANALI VE MANTIĞI -->
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="luxe-card gold-border">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-futbol"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">Kanal A: Maç & VIP Saha Rezervasyonu</h3>
+                  <div style="font-size: 12px; color: var(--glow);">Oyuncular ve Takımlar İçin</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">Oyuncular tarih, saat, oyuncu sayısı ve Maybach VIP transfer ihtiyacını belirterek anında rezervasyon talebini concierge ekibine iletir.</p>
+            </div>
+
+            <div class="luxe-card gold-border">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-handshake"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">Kanal B: Franchise & Saha Dönüşümü</h3>
+                  <div style="font-size: 12px; color: #2ecc71;">Yatırımcılar ve Tesis Sahipleri İçin</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">Mevcut halısahasını STADIA ARENA'ya dönüştürmek veya yeni bir stadyum açmak isteyen yatırımcılar lokasyon ve metrekare bilgilerini iletir.</p>
+            </div>
+
+            <div class="luxe-card">
+              <div class="luxe-card-header">
+                <div class="luxe-icon-box"><i class="fa-solid fa-shield-check"></i></div>
+                <div>
+                  <h3 class="luxe-card-title">Doğrulama & Anında Geri Bildirim</h3>
+                  <div style="font-size: 12px; color: #3498db;">Kusursuz Form UX</div>
+                </div>
+              </div>
+              <p class="luxe-card-desc">Telefon numarası maskeleme, e-posta regex doğrulaması ve form gönderildiğinde çıkan lüks altın onay modalı.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-footer-left"><span>BAŞVURU VE REZERVASYON FORMU ÇALIŞMA MANTIĞI</span></div>
+          <div class="slide-footer-right"><span>SLAYT 13 / 14</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SLIDE 14: KAPANIŞ, SHOWROOM & İLETİŞİM
+         ===================================================================== -->
+    <section class="slide" id="slide-14" style="background: radial-gradient(circle at 50% 50%, rgba(227, 168, 87, 0.1) 0%, rgba(14, 30, 23, 0.9) 60%, #07100c 95%), url('images/arena-dome-glow-night.jpg') center/cover no-repeat;">
+      <div style="position: absolute; inset:0; background: rgba(7, 16, 12, 0.88); z-index: 1;"></div>
+
+      <div class="slide-content-wrap">
+        <div class="slide-header" style="border:none;">
+          <div class="slide-header-left">
+            <div class="slide-tag">SONUÇ & İLETİŞİM BİLGİLERİ</div>
+          </div>
+          <div class="slide-header-right">
+            <div class="slide-brand-pill"><span class="dot"></span> STADIA ARENA</div>
+          </div>
+        </div>
+
+        <div style="margin: auto 0; text-align: center; max-width: 900px; align-self: center; z-index: 2;">
+          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: rgba(227, 168, 87, 0.15); border: 1px solid var(--hairline-gold); border-radius: 999px; font-size: 13px; color: var(--glow); font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 24px;">
+            <i class="fa-solid fa-handshake"></i> GELECEĞİN STADYUMUNU BİRLİKTE KURALIM
+          </div>
+
+          <h2 style="font-family: var(--font-serif); font-size: 64px; font-weight: 500; color: #fff; line-height: 1.1; margin-bottom: 20px;">
+            Futbolun Yeni Çağında<br>
+            <span style="color: var(--glow); font-style: italic;">Yerinizi Alın.</span>
+          </h2>
+
+          <p style="font-size: 18px; color: var(--text-muted); line-height: 1.6; max-width: 760px; margin: 0 auto 40px;">
+            STADIA ARENA; geleneksel spor tesislerini yüksek kârlı, prestijli ve teknoloji odaklı yeni nesil eğlence merkezlerine dönüştürür. Showroom ziyareti ve ortaklık için bizimle iletişime geçin.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: left; max-width: 850px; margin: 0 auto 40px;">
+            <div class="luxe-card gold-border" style="padding: 18px 22px;">
+              <div style="font-size: 20px; color: var(--glow); margin-bottom: 6px;"><i class="fa-solid fa-location-dot"></i></div>
+              <div style="font-weight: 600; color: #fff; font-size: 14px;">Merkez & Showroom</div>
+              <div style="font-size: 12.5px; color: var(--text-muted);">Vadistanbul Bulvar No: 42, Sarıyer / İstanbul</div>
+            </div>
+
+            <div class="luxe-card gold-border" style="padding: 18px 22px;">
+              <div style="font-size: 20px; color: var(--glow); margin-bottom: 6px;"><i class="fa-solid fa-phone"></i></div>
+              <div style="font-weight: 600; color: #fff; font-size: 14px;">Doğrudan İletişim</div>
+              <div style="font-size: 12.5px; color: var(--text-muted);">+90 (212) 800 42 00<br>franchise@stadiaarena.com</div>
+            </div>
+
+            <div class="luxe-card gold-border" style="padding: 18px 22px;">
+              <div style="font-size: 20px; color: var(--glow); margin-bottom: 6px;"><i class="fa-solid fa-globe"></i></div>
+              <div style="font-weight: 600; color: #fff; font-size: 14px;">Resmi Web Sitesi</div>
+              <div style="font-size: 12.5px; color: var(--text-muted);">https://stadiaarena.com/<br>Haute Couture Edition</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-footer-left">
+            <span>STADIA ARENA RESMİ DÖKÜMANTASYON VE YÖNETİCİ SUNUMU</span>
+            <span>•</span>
+            <span>TÜM HAKLARI SAKLIDIR © 2026</span>
+          </div>
+          <div class="slide-footer-right">
+            <span>SLAYT 14 / 14</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- INTERACTIVE PRESENTATION SCRIPT -->
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 14;
+
+    function updateSlideDisplay() {
+      const indicator = document.getElementById('slide-indicator');
+      if (indicator) {
+        indicator.textContent = (currentSlide < 10 ? '0' : '') + currentSlide + ' / ' + (totalSlides < 10 ? '0' : '') + totalSlides;
+      }
+      
+      const target = document.getElementById('slide-' + currentSlide);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function navigateSlide(direction) {
+      currentSlide += direction;
+      if (currentSlide < 1) currentSlide = 1;
+      if (currentSlide > totalSlides) currentSlide = totalSlides;
+      updateSlideDisplay();
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.error(err);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        navigateSlide(1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'Backspace' || e.key === 'PageUp') {
+        e.preventDefault();
+        navigateSlide(-1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      } else if (e.key === 'p' || e.key === 'P') {
+        window.print();
+      }
+    });
+
+    // Detect scroll for indicator
+    window.addEventListener('scroll', () => {
+      const slides = document.querySelectorAll('.slide');
+      const scrollPos = window.scrollY + window.innerHeight / 2;
+      slides.forEach((s, idx) => {
+        const top = s.offsetTop;
+        const height = s.offsetHeight;
+        if (scrollPos >= top && scrollPos < top + height) {
+          currentSlide = idx + 1;
+          const indicator = document.getElementById('slide-indicator');
+          if (indicator) {
+            indicator.textContent = (currentSlide < 10 ? '0' : '') + currentSlide + ' / ' + (totalSlides < 10 ? '0' : '') + totalSlides;
+          }
+        }
+      });
+    }, { passive: true });
+  </script>
+</body>
+</html>
