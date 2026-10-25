@@ -2774,6 +2774,302 @@
       font-size: 26px;
       box-shadow: 0 0 25px rgba(227, 168, 87, 0.35);
     }
+
+    /* ==========================================================================
+       ACTE II.V — ÉCOSYSTÈME & SERVICES SUR MESURE
+       "Haute Couture Sports Ecosystem & Bespoke Luxury Services"
+       ========================================================================== */
+    .ecosystem-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(24px, 2.5vw, 36px);
+      margin-top: clamp(40px, 4.5vw, 60px);
+      position: relative;
+      z-index: 1;
+    }
+
+    .ecosystem-card {
+      background: linear-gradient(180deg, rgba(14, 30, 23, 0.55) 0%, rgba(7, 16, 12, 0.88) 100%);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(227, 168, 87, 0.22);
+      border-radius: var(--tile-radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(239, 230, 214, 0.08);
+      transition: border-color 0.45s ease, transform 0.5s var(--ease-camera), box-shadow 0.45s ease;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .ecosystem-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--tile-radius);
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(227, 168, 87, 0.4) 0%, transparent 40%, rgba(227, 168, 87, 0.15) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0.6;
+      transition: opacity 0.4s ease;
+      z-index: 4;
+    }
+
+    .ecosystem-card:hover {
+      border-color: rgba(227, 168, 87, 0.75);
+      transform: translateY(-8px);
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 40px rgba(227, 168, 87, 0.22), inset 0 1px 0 rgba(227, 168, 87, 0.4);
+    }
+
+    .ecosystem-card:hover::before {
+      opacity: 1;
+    }
+
+    .ecosystem-media-wrap {
+      position: relative;
+      width: 100%;
+      height: clamp(230px, 22vw, 290px);
+      overflow: hidden;
+      background: var(--panel-3);
+    }
+
+    .ecosystem-media {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.88) contrast(1.05);
+      transition: transform 0.8s var(--ease-camera), filter 0.5s ease;
+    }
+
+    .ecosystem-card:hover .ecosystem-media {
+      transform: scale(1.07);
+      filter: brightness(1.02) contrast(1.08);
+    }
+
+    .ecosystem-media-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(7, 16, 12, 0.2) 0%, rgba(7, 16, 12, 0.4) 50%, rgba(7, 16, 12, 0.98) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .ecosystem-top-badges {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      right: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .ecosystem-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(7, 16, 12, 0.78);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(227, 168, 87, 0.35);
+      font-family: var(--font-sans);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .ecosystem-pill i {
+      color: var(--glow);
+      font-size: 11px;
+    }
+
+    .ecosystem-icon-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(14, 30, 23, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(227, 168, 87, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--glow);
+      font-size: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(227, 168, 87, 0.25);
+      transition: transform 0.4s var(--ease-camera), background 0.3s ease, border-color 0.3s ease;
+    }
+
+    .ecosystem-card:hover .ecosystem-icon-badge {
+      transform: scale(1.1) rotate(6deg);
+      border-color: var(--glow);
+      background: rgba(28, 58, 43, 0.95);
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6), 0 0 25px rgba(227, 168, 87, 0.45);
+    }
+
+    .ecosystem-body {
+      padding: clamp(24px, 2.5vw, 34px);
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    .ecosystem-eyebrow {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--glow);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ecosystem-eyebrow::after {
+      content: '';
+      flex-grow: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(227, 168, 87, 0.3) 0%, transparent 100%);
+    }
+
+    .ecosystem-title {
+      font-family: var(--font-serif);
+      font-size: clamp(23px, 2vw, 30px);
+      font-weight: 400;
+      line-height: 1.22;
+      color: var(--text);
+      margin-bottom: 14px;
+      transition: color 0.3s ease;
+    }
+
+    .ecosystem-card:hover .ecosystem-title {
+      color: #ffffff;
+      text-shadow: 0 0 20px rgba(227, 168, 87, 0.25);
+    }
+
+    .ecosystem-desc {
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--muted);
+      margin-bottom: 22px;
+      flex-grow: 1;
+    }
+
+    .ecosystem-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 22px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(239, 230, 214, 0.08);
+    }
+
+    .ecosystem-feature-tag {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      padding: 5px 11px;
+      border-radius: 6px;
+      background: rgba(239, 230, 214, 0.04);
+      border: 1px solid rgba(239, 230, 214, 0.08);
+      color: rgba(239, 230, 214, 0.82);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .ecosystem-feature-tag i {
+      color: var(--glow);
+      font-size: 10px;
+    }
+
+    .ecosystem-card:hover .ecosystem-feature-tag {
+      background: rgba(227, 168, 87, 0.08);
+      border-color: rgba(227, 168, 87, 0.25);
+      color: var(--text);
+    }
+
+    .ecosystem-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 18px;
+      border-top: 1px solid rgba(239, 230, 214, 0.06);
+    }
+
+    .ecosystem-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .ecosystem-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #00e5ff;
+      box-shadow: 0 0 8px #00e5ff;
+      animation: pulse-glow 2s infinite;
+    }
+
+    .ecosystem-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-sans);
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--glow);
+      text-decoration: none;
+      transition: gap 0.3s ease, color 0.3s ease;
+    }
+
+    .ecosystem-cta i {
+      transition: transform 0.3s ease;
+    }
+
+    .ecosystem-card:hover .ecosystem-cta {
+      color: #ffffff;
+      gap: 12px;
+    }
+
+    .ecosystem-card:hover .ecosystem-cta i {
+      transform: translateX(3px);
+    }
+
+    @media (max-width: 1080px) {
+      .ecosystem-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+      .ecosystem-media-wrap {
+        height: 260px;
+      }
+    }
   </style>
 </head>
 
@@ -2794,6 +3090,7 @@
     <ul class="nav-links">
       <li><a href="#manifesto">Manifesto</a></li>
       <li><a href="#metamorphose">Metamorfoz</a></li>
+      <li><a href="#ekosistem">Ekosistem</a></li>
       <li><a href="#deneyim">360° Deneyim</a></li>
       <li><a href="#teknoloji">Teknoloji & VAR</a></li>
       <li><a href="#galeri">Galeri & Portföy</a></li>
@@ -2832,6 +3129,7 @@
     <ul class="mobile-nav-links">
       <li><a href="#manifesto" onclick="toggleMobileMenu(false)">Manifesto</a></li>
       <li><a href="#metamorphose" onclick="toggleMobileMenu(false)">Metamorfoz</a></li>
+      <li><a href="#ekosistem" onclick="toggleMobileMenu(false)">Ekosistem</a></li>
       <li><a href="#deneyim" onclick="toggleMobileMenu(false)">360° Deneyim</a></li>
       <li><a href="#teknoloji" onclick="toggleMobileMenu(false)">Teknoloji & VAR</a></li>
       <li><a href="#galeri" onclick="toggleMobileMenu(false)">Galeri & Portföy</a></li>
@@ -3321,6 +3619,138 @@
           </div>
 
         </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION DIVIDER BEAM -->
+  <div class="section-beam-wrap">
+    <div class="section-beam"></div>
+  </div>
+
+  <!-- ==========================================================================
+       ACTE II.V: ÉCOSYSTÈME & SERVICES SUR MESURE — (Özel Ekosistem ve Lüks Hizmetler)
+       ========================================================================== -->
+  <section class="section-wrap" id="ekosistem">
+    <div class="section-radiance rad-gold" style="top:15%; left:-5%; width:600px; height:600px;"></div>
+    <div class="section-radiance rad-green" style="bottom:10%; right:-5%; width:500px; height:500px;"></div>
+
+    <div class="container">
+      <div class="reveal-stagger" style="max-width: 880px;">
+        <span class="act-badge">• ÉCOSYSTÈME HAUTE COUTURE</span>
+        <h2 class="editorial-headline" style="font-size: clamp(38px, 4.6vw, 76px);">
+          Sahada Akıl, <span class="editorial-italic font-glow-halo">Dışarıda Kusursuzluk.</span>
+        </h2>
+        <p class="editorial-subline" style="margin-top: 18px;">
+          Stadia Arena yalnızca bir maç alanı değil; vücut kameralarından dijital oyuncu kartlarına ve zaman tasarrufu sağlayan lüks hizmetlere kadar uzanan eksiksiz bir yaşam merkezidir.
+        </p>
+      </div>
+
+      <!-- 3'LÜ GLASSMORPHISM KART GRID -->
+      <div class="ecosystem-grid">
+
+        <!-- KART 1: BODYCAM DENEYİMİ -->
+        <article class="ecosystem-card" onclick="openLightbox('image', 'images/stadia_bodycam.jpg', 'Göğüs Kamerası (Bodycam) Kaydı — Birinci Şahıs POV Deneyimi')">
+          <div class="ecosystem-media-wrap">
+            <img src="images/stadia_bodycam.jpg" alt="Göğüs Kamerası (Bodycam) Kaydı" class="ecosystem-media" loading="lazy">
+            <div class="ecosystem-media-overlay"></div>
+            <div class="ecosystem-top-badges">
+              <span class="ecosystem-pill"><i class="fa-solid fa-video"></i> POV KAMERA</span>
+              <div class="ecosystem-icon-badge" title="POV Mini Bodycam">
+                <i class="fa-solid fa-camera"></i>
+              </div>
+            </div>
+          </div>
+          <div class="ecosystem-body">
+            <div class="ecosystem-eyebrow">01 • BİRİNCİ ŞAHIS AÇISI</div>
+            <h3 class="ecosystem-title">Göğüs Kamerası (Bodycam) Kaydı</h3>
+            <p class="ecosystem-desc">
+              Tişörtün altına gizlenen mıknatıslı özel mini bodycam ile kendi maçınızı birinci şahıs (POV) açısıyla kaydedin. Golleri, çalımları ve o heyecanı sosyal medyada paylaşın.
+            </p>
+            <div class="ecosystem-features">
+              <span class="ecosystem-feature-tag"><i class="fa-solid fa-magnet"></i> Mıknatıslı Göğüs Kilidi</span>
+              <span class="ecosystem-feature-tag"><i class="fa-solid fa-film"></i> 4K 60FPS POV</span>
+              <span class="ecosystem-feature-tag"><i class="fa-solid fa-share-nodes"></i> Anında Sosyal Medya</span>
+            </div>
+            <div class="ecosystem-footer">
+              <span class="ecosystem-status">
+                <span class="ecosystem-status-dot"></span> Canlı Kayıt Hazır
+              </span>
+              <span class="ecosystem-cta">
+                Keşfet <i class="fa-solid fa-arrow-right"></i>
+              </span>
+            </div>
+          </div>
+        </article>
+
+        <!-- KART 2: DİJİTAL OYUNCU KARTI & ISI HARİTASI -->
+        <article class="ecosystem-card" onclick="openLightbox('image', 'images/stadia_playercard.jpg', 'Stadia FC Dijital Oyuncu Kartı — EA Sports FC Tarzı Isı Haritası & İstatistikler')">
+          <div class="ecosystem-media-wrap">
+            <img src="images/stadia_playercard.jpg" alt="Stadia FC Dijital Oyuncu Kartı" class="ecosystem-media" loading="lazy">
+            <div class="ecosystem-media-overlay"></div>
+            <div class="ecosystem-top-badges">
+              <span class="ecosystem-pill"><i class="fa-solid fa-chart-line"></i> DİJİTAL KİMLİK</span>
+              <div class="ecosystem-icon-badge" title="EA Sports FC Tarzı Oyuncu Kartı">
+                <i class="fa-solid fa-id-card-clip"></i>
+              </div>
+            </div>
+          </div>
+          <div class="ecosystem-body">
+            <div class="ecosystem-eyebrow">02 • DİJİTAL ÜYELİK & ANALİTİK</div>
+            <h3 class="ecosystem-title">Stadia FC Dijital Oyuncu Kartı</h3>
+            <p class="ecosystem-desc">
+              EA Sports FC tarzı istatistikler, maç sonu otomatik ısı haritaları, koşu mesafeleri ve sprint hızınızla dijital futbol kimliğinizi oluşturun.
+            </p>
+            <div class="ecosystem-features">
+              <span class="ecosystem-feature-tag"><i class="fa-solid fa-fire-flame-curved"></i> Otomatik Isı Haritası</span>
+              <span class="ecosystem-feature-tag"><i class="fa-solid fa-gauge-high"></i> Sprint & Hız Radarı</span>
+              <span class="ecosystem-feature-tag"><i class="fa-solid fa-microchip"></i> EA FC Kart Tasarımı</span>
+            </div>
+            <div class="ecosystem-footer">
+              <span class="ecosystem-status">
+                <span class="ecosystem-status-dot"></span> Stadia FC v2.4
+              </span>
+              <span class="ecosystem-cta">
+                Keşfet <i class="fa-solid fa-arrow-right"></i>
+              </span>
+            </div>
+          </div>
+        </article>
+
+        <!-- KART 3: MAÇ ESNASINDA OTO YIKAMA -->
+        <article class="ecosystem-card" onclick="openLightbox('image', 'images/stadia_carwash.jpg', 'Maç Esnası Premium Oto Yıkama — Siz Sahadayken Aracınız Işıldasın')">
+          <div class="ecosystem-media-wrap">
+            <img src="images/stadia_carwash.jpg" alt="Maç ESNASI Premium Oto Yıkama" class="ecosystem-media" loading="lazy">
+            <div class="ecosystem-media-overlay"></div>
+            <div class="ecosystem-top-badges">
+              <span class="ecosystem-pill"><i class="fa-solid fa-car-side"></i> CONCIERGE & VALE</span>
+              <div class="ecosystem-icon-badge" title="Premium Oto Yıkama & Detailing">
+                <i class="fa-solid fa-spray-can-sparkles"></i>
+              </div>
+            </div>
+          </div>
+          <div class="ecosystem-body">
+            <div class="ecosystem-eyebrow">03 • ZAMAN TASARRUFU & LÜKS</div>
+            <h3 class="ecosystem-title">Maç ESNASI Premium Oto Yıkama</h3>
+            <p class="ecosystem-desc">
+              Siz Şampiyonlar Ligi atmosferinde maçınızı yaparken, aracınız profesyonel ekibimiz tarafından dışarıda köpüklü iç-dış yıkamaya alınır. Zaman size kalır.
+            </p>
+            <div class="ecosystem-features">
+              <span class="ecosystem-feature-tag"><i class="fa-solid fa-soap"></i> Köpüklü Kar Şampuanı</span>
+              <span class="ecosystem-feature-tag"><i class="fa-solid fa-clock"></i> 60 Dk İç-Dış Detailing</span>
+              <span class="ecosystem-feature-tag"><i class="fa-solid fa-shield-halved"></i> Güvenli Vale Park</span>
+            </div>
+            <div class="ecosystem-footer">
+              <span class="ecosystem-status">
+                <span class="ecosystem-status-dot"></span> VIP Vale Servisi
+              </span>
+              <span class="ecosystem-cta">
+                Keşfet <i class="fa-solid fa-arrow-right"></i>
+              </span>
+            </div>
+          </div>
+        </article>
 
       </div>
     </div>
@@ -3999,6 +4429,7 @@
         <div style="display:flex; gap:24px; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; flex-wrap:wrap;">
           <a href="#manifesto" style="color:var(--muted); text-decoration:none;">Manifesto</a>
           <a href="#metamorphose" style="color:var(--muted); text-decoration:none;">Metamorfoz</a>
+          <a href="#ekosistem" style="color:var(--muted); text-decoration:none;">Ekosistem</a>
           <a href="#deneyim" style="color:var(--muted); text-decoration:none;">Mekân</a>
           <a href="#teknoloji" style="color:var(--muted); text-decoration:none;">Teknoloji</a>
           <a href="#galeri" style="color:var(--muted); text-decoration:none;">Galeri</a>
@@ -4674,6 +5105,26 @@
         );
       });
 
+      // Reveal Ecosystem haute couture cards with smooth stagger
+      gsap.utils.toArray('.ecosystem-card').forEach((card, idx) => {
+        gsap.fromTo(card,
+          { y: 35, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1.0,
+            delay: idx * 0.14,
+            ease: "cubic-bezier(0.16, 1, 0.3, 1)",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 92%",
+              toggleActions: "play none none none",
+              once: true
+            }
+          }
+        );
+      });
+
       // Parallax effect on ambient radiances
       gsap.utils.toArray('.section-radiance').forEach(rad => {
         gsap.to(rad, {
@@ -4687,6 +5138,9 @@
           }
         });
       });
+
+      // Recalculate ScrollTrigger positions
+      ScrollTrigger.refresh();
     }
 
     // 5. INTERACTIVE ROI CALCULATOR
@@ -4899,6 +5353,7 @@
       const sectionIds = [
         'manifesto',
         'metamorphose',
+        'ekosistem',
         'deneyim',
         'teknoloji',
         'galeri',
